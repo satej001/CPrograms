@@ -1,0 +1,85 @@
+//Write AJAX program where the user is requested to write his or her name in a text box, and the server keeps sending back responses while the user is typing. If the user name is not entered then the message displayed will be, “Stranger, please tell me your name!”. If the name is Rohit, Virat, Dhoni, Ashwin or Harbhajan , the server responds with “Hello, master !”. If the name is anything else, the message will be “, I don’t know you!” 
+
+//html
+<html>
+<body>
+<label for="nameInput">Enter your name:</label>
+<input type="text" id="nameInput">
+<p id="response">Stranger, please tell me your name!</p>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  var nameInput = document.getElementById('nameInput');
+  var responseElement = document.getElementById('response');
+
+  function checkName() {
+    var name = nameInput.value.trim();
+
+    if (name === '') {
+      responseElement.textContent = 'Stranger, please tell me your name!';
+      return;
+    }
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', '1.php', true);
+    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState === 4 && xhr.status === 200) {
+        responseElement.textContent = xhr.responseText;
+      }
+    };
+    xhr.send('name=' + encodeURIComponent(name));
+  }
+  nameInput.addEventListener('input', function() {
+    checkName();
+  });
+});
+</script>
+
+</body>
+</html>
+
+//1.php
+<?php
+if (isset($_POST['name'])) {
+    $name = $_POST['name'];
+
+    if (empty($name)) {
+        echo 'Stranger, please tell me your name!';
+    } elseif (in_array($name, ['Rohit', 'Virat', 'Dhoni', 'Ashwin', 'Harbhajan'])) {
+        echo 'Hello, master!';
+    } else {
+        echo "I don't know you!";
+    }
+} else {
+    echo 'Invalid request';
+}
+?>
+
+//Download nursery dataset from UCI. Build a linear regression model by identifying independent
+and target variable. Split the variables into training and testing sets and print them. Build a simple linear regression model for predicting purchases. 
+
+import numpy as np
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import mean_squared_error
+
+nursery_data = pd.read_csv("CSV/nursery.csv")
+
+X = nursery_data[['social']]
+y = nursery_data[['health']]
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+model = LinearRegression()
+model.fit(X_train, y_train)
+train_rmse = np.sqrt(mean_squared_error(y_train, model.predict(X_train)))
+test_rmse = np.sqrt(mean_squared_error(y_test, model.predict(X_test)))
+
+print("Training RMSE:", train_rmse)
+print("Testing RMSE:", test_rmse)
+
+plt.scatter(X_test, y_test, color = 'green')
+plt.plot(X_train, model.predict(X_train), color='red',linewidth=3)
+plt.title('Regression(Height Weight)')
+plt.xlabel('Height')
+plt.ylabel('Weight')
+plt.show()

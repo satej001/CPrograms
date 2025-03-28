@@ -1,0 +1,88 @@
+//Write a PHP script to create student.xml file which contains student roll no, name, address, college and course. Print students detail of specific course in tabular format after accepting course as input.
+
+<?php
+$course = $_GET['course'];
+$xml = simplexml_load_file('student.xml');
+
+if ($xml) {
+    $students = array();
+    foreach ($xml->student as $student) {
+        $studentDetails = array(
+            'roll_no' => (string)$student->roll_no,
+            'name' => (string)$student->name,
+            'address' => (string)$student->address,
+            'college' => (string)$student->college,
+            'course' => (string)$student->course
+        );
+        $students[] = $studentDetails;
+    }
+
+    function printStudents($students) {
+        echo "<table border='1'>
+                <tr>
+                    <th>Roll No</th>
+                    <th>Name</th>
+                    <th>Address</th>
+                    <th>College</th>
+                    <th>Course</th>
+                </tr>";
+
+        foreach ($students as $student) {
+            echo "<tr>
+                    <td>{$student['roll_no']}</td>
+                    <td>{$student['name']}</td>
+                    <td>{$student['address']}</td>
+                    <td>{$student['college']}</td>
+                    <td>{$student['course']}</td>
+                  </tr>";
+        }
+        echo "</table>";
+    }
+
+    function filterStudentsByCourse($students, $course) {
+        $filteredStudents = array();
+        foreach ($students as $student) {
+            if ($student['course'] == $course) {
+                $filteredStudents[] = $student;
+            }
+        }
+        return $filteredStudents;
+    }
+
+    if (!empty($course)) {
+        $filteredStudents = filterStudentsByCourse($students, $course);
+        if (!empty($filteredStudents)) {
+            echo "<h2>Students in $course</h2>";
+            printStudents($filteredStudents);
+        } else {
+            echo "<p>No students found in $course.</p>";
+        }
+    }
+} else {
+    echo "Failed to load student.xml file.";
+}
+?>
+
+//Consider the following dataset : https://www.kaggle.com/datasets/datasnaek/youtube-new?select=INvideos.csv Write a Python script for the following : i. Read the dataset and perform data cleaning operations on it. ii. Find the total views, total likes, total dislikes and comment count.
+
+import pandas as pd
+import matplotlib.pyplot as plt
+import pandas as pd
+import matplotlib.pyplot as plt
+
+data = pd.read_csv("CSV/INvideos.csv")
+data.dropna(inplace=True)
+total_views = data['views'].sum()
+total_likes = data['likes'].sum()
+total_dislikes = data['dislikes'].sum()
+total_comments = data['comment_count'].sum()
+
+print("Total Views:", total_views)
+print("Total Likes:", total_likes)
+print("Total Dislikes:", total_dislikes)
+print("Total Comments:", total_comments)
+
+least_liked_video = data.loc[data['likes'].idxmin()]
+top_liked_video = data.loc[data['likes'].idxmax()]
+least_commented_video = data.loc[data['comment_count'].idxmin()]
+top_commented_video = data.loc[data['comment_count'].idxmax()]

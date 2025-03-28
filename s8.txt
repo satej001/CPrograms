@@ -1,0 +1,56 @@
+//Write a JavaScript to display message ‘Exams are near, have you started preparing for?’ (usealert box ) and Accept any two numbers from user and display addition of two number .(Use Prompt and confirm box)
+
+<html>
+<head>
+    <title>Exam Preparation</title>
+</head>
+<body>
+<script>
+    
+    var userInputPrompt = confirm('Exams are near, have you started preparing for?');
+        if (userInputPrompt == true) 
+        {
+            alert('Great! Keep up the good work!');
+        }
+	else
+        {
+            prompt('You should start preparing!');
+        }
+
+    var num1 = prompt('Enter num1: ');
+    var num2 = prompt('Enter num2: ');
+    var addn = Number(num1) + Number(num2);
+
+    alert("Addition of num1 and num2 = " + addn);
+</script>
+
+</body>
+</html>
+
+//Download the groceries dataset. Write a python program to read the dataset and display its information. Preprocess the data (drop null values etc.) Convert the categorical values into numeric format. Apply the apriori algorithm on the above dataset to generate the frequent itemsets and association rules.
+
+import pandas as pd
+from mlxtend.frequent_patterns import apriori,association_rules
+df=pd.read_csv('CSV/groceries.csv')
+df=df.sample(50)
+df
+
+transactions=[]
+for i in range(0,len(df)):
+      transactions.append([str(df.values[i,j])for j in range(0,len(df.columns))if(str(df.values[i,j])!='nan')])
+transactions
+
+df.dropna(inplace=True,axis=0)
+from mlxtend.preprocessing import TransactionEncoder
+te=TransactionEncoder()
+te_array=te.fit_transform(transactions)
+te_array = te_array.astype('int')
+df1=pd.DataFrame(te_array,columns=te.columns_)
+df1
+
+freq_items=apriori(df1,min_support=0.005,use_colnames=True)
+freq_items
+
+rules=association_rules(freq_items,metric='support',min_threshold=0.005)
+rules=rules.sort_values(['support','confidence'])
+rules.tail() 

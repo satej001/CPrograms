@@ -1,0 +1,47 @@
+Create a XML file which gives details of books available in “Bookstore” from following categories. 1) Yoga 2) Story 3) Technical. and elements in each category are in the following  Save the file as “Bookcategory.xml”
+
+<Bookstore>
+    <Yoga>
+        <Book>
+            <Book_Title>Yoga Is Here</Book_Title>
+            <Book_Author>ABCD</Book_Author>
+            <Book_Price>$20.00</Book_Price>
+        </Book>
+    </Yoga>
+    <Story>
+        <Book>
+            <Book_Title>STORY BOOK</Book_Title>
+            <Book_Author>asndda</Book_Author>
+            <Book_Price>$12.00</Book_Price>
+        </Book>
+    </Story>
+    <Technical>
+        <Book>
+            <Book_Title>nksdakd</Book_Title>
+            <Book_Author>kjdsakdsa</Book_Author>
+            <Book_Price>$30.00</Book_Price>
+        </Book>
+    </Technical>
+</Bookstore>
+
+//Create the dataset . transactions = [['eggs', 'milk','bread'], ['eggs', 'apple'], ['milk', 'bread'], ['apple', 'milk'], ['milk', 'apple', 'bread']] . Convert the categorical values into numeric format.Apply the apriori algorithm on the above dataset to generate the frequent itemsets and association rules.
+
+import numpy as np 
+import pandas as pd 
+from mlxtend.frequent_patterns import apriori, association_rules 
+
+transactions = [['eggs','milk','bread'],['eggs','apple'],['milk','bread'],['apple', 'milk'],['milk','apple','bread']]
+
+from mlxtend.preprocessing import TransactionEncoder
+te=TransactionEncoder()
+te_array=te.fit(transactions).transform(transactions)
+df=pd.DataFrame(te_array, columns=te.columns_)
+df = df.astype(int)
+df
+
+freq_items = apriori(df, min_support = 0.5, use_colnames = True)
+print(freq_items)
+
+rules = association_rules(freq_items, metric ='support', min_threshold=0.05)
+rules = rules.sort_values(['support', 'confidence'], ascending =[False,False])
+rules

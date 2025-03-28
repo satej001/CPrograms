@@ -1,0 +1,42 @@
+//Write a JavaScript function to validate username and password for a membership form
+
+<script>
+    function validateform() {
+        var name = document.myform.name.value;
+        var password = document.myform.password.value;
+
+        if (name == null || name == "") {
+            alert("Name can't be blank");
+            return false;
+        } else if (password.length < 6) {
+            alert("Password must be at least 6 characters long.");
+            return false;
+        }
+    }  
+</script>
+
+<body>
+    <form name="myform" method="post" onsubmit="return validateform()">
+        Name: <input type="text" name="name"><br />
+        Password: <input type="password" name="password"><br />
+        <input type="submit" value="register">
+    </form>
+</body>
+
+//Create your own transactions dataset and apply the above process on your dataset.
+
+import pandas as pd
+from mlxtend.frequent_patterns import apriori,association_rules
+transaction=[['sugar','tea'],['coffee','tea','sugar'],['tea','coffee'],['coffee','suagr','tea','milk']]
+
+from mlxtend.preprocessing import TransactionEncoder
+te=TransactionEncoder()
+te_array=te.fit(transaction).transform(transaction)
+df=pd.DataFrame(te_array,columns=te.columns_)
+df = df.astype(int)
+df
+
+freq_items=apriori(df,min_support=0.5,use_colnames=True)
+rules=association_rules(freq_items,metric='support',min_threshold=0.05)
+rules=rules.sort_values(['support','confidence'],ascending=[False,False])
+rules

@@ -1,0 +1,56 @@
+Write PHP script to read “book.xml” file into simpleXML object. Display attributes and elements . ( simple_xml_load_file() function ) 
+
+//xml
+<?xml version="1.0" encoding="UTF-8"?>
+<BookInfo>
+<book>
+<bookno>1</bookno>
+<bookname>java</bookname>
+<authorname>Balguru Swami</authorname>
+<price>250</price>
+<year>2006</year>
+</book>
+<book>
+<bookno>2</bookno>
+<bookname>c</bookname>
+<authorname>Denic Ritchie</authorname>
+<price>500</price>
+<year>1971</year>
+</book>
+</BookInfo>
+
+//php1
+<?php
+$xml=simplexml_load_file("book.xml");
+foreach($xml->book as $bk)
+{
+  echo"Book Number=$bk->bookno<br>";
+  echo"Book Name=$bk->bookname<br>";
+  echo"AuthorNumber=$bk->authorname<br>";
+  echo"price=$bk->price<br>";
+  echo"year=$bk->year<br>";
+}
+?>  
+  
+
+//Create the following dataset in python & Convert the categorical values into numeric format.Apply the apriori algorithm on the above dataset to generate the frequent itemsets and association rules. Repeat the process with different min_sup values.
+
+import numpy as np 
+import pandas as pd 
+from mlxtend.frequent_patterns import apriori, association_rules 
+
+transactions = [['Bread', 'Milk'], ['Bread','Diaper','Beer','Eggs'],['Milk','Diaper','Beer','Coke'],['Bread','Milk','Diaper','Beer'],['Bread','Milk','Diaper','Coke']]
+
+from mlxtend.preprocessing import TransactionEncoder
+te=TransactionEncoder()
+te_array=te.fit(transactions).transform(transactions)
+df=pd.DataFrame(te_array, columns=te.columns_)
+df = df.astype(int)
+df
+
+freq_items = apriori(df, min_support = 0.5, use_colnames = True)
+print(freq_items)
+
+rules = association_rules(freq_items, metric ='support', min_threshold=0.05)
+rules = rules.sort_values(['support', 'confidence'], ascending =[False,False])
+rules

@@ -1,0 +1,29 @@
+//create a student.xml file containing at least 5 student information
+
+<?xml version="1.0" encoding="UTF-8"?>
+<Students>
+	<Student>
+		<name>s1</name>
+		<rno>1</rno>
+	</student>
+</Students>
+
+//Consider text paragraph."""Hello all, Welcome to Python Programming Academy. Python
+Programming Academy is a nice platform to learn new programming skills. It is difficult to get enrolled in this Academy."""Remove the stopwords.
+
+import nltk
+from nltk.corpus import stopwords
+from nltk.tokenize import word_tokenize
+
+text = """Hello all, Welcome to Python Programming Academy. Python Programming Academy is a nice platform to learn new programming skills. It is difficult to get enrolled in this Academy."""
+
+nltk.download('stopwords')
+nltk.download('punkt')
+
+words = word_tokenize(text)
+stop_words = set(stopwords.words('english'))
+filtered_words = [word for word in words if word.lower() not in stop_words]
+filtered_text = ' '.join(filtered_words)
+
+print("Original Text:\n", text)
+print("\nText after removing stopwords:\n", filtered_text) 

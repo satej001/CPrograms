@@ -1,0 +1,64 @@
+//Write a Javascript program to accept name of student, change font color to red, font size to 18 if student name is present otherwise on clicking on empty text box display image which changes its size (Use onblur, onload, onmousehover, onmouseclick, onmouseup)
+
+<html>
+<body>
+
+  <label for="studentName">Enter Student Name:</label>
+  <input type="text" id="studentName" onblur="changeStyle()" onmouseover="displayImage()" onmouseout="hideImage()" onclick="changeImageSize()" onmouseup="hideImage()">
+
+  <div id="outputImage">
+    <img src="img.png" alt="Image" id="studentImage" onload="changeImageSize()">
+  </div>
+
+  <script>
+    function changeStyle() {
+      var studentNameInput = document.getElementById('studentName');
+      if (studentNameInput.value.trim() !== '') {
+        studentNameInput.style.color = 'red';
+        studentNameInput.style.fontSize = '18px';
+      }
+    }
+
+    function displayImage() {
+      var studentNameInput = document.getElementById('studentName');
+      if (studentNameInput.value.trim() === '') {
+        var outputImage = document.getElementById('outputImage');
+        outputImage.style.display = 'block';
+      }
+    }
+
+    function hideImage() {
+      var outputImage = document.getElementById('outputImage');
+      outputImage.style.display = 'none';
+    }
+
+    function changeImageSize() {
+      var studentImage = document.getElementById('studentImage');
+      studentImage.style.width = '200px';
+    }
+  </script>
+
+</body>
+</html>
+
+//Create the following dataset in python & Convert the categorical values into numeric format.Apply the apriori algorithm on the above dataset to generate the frequent itemsets and associationrules. Repeat the process with different min_sup values.
+
+import numpy as np 
+import pandas as pd 
+from mlxtend.frequent_patterns import apriori, association_rules 
+
+transactions = [['eggs','milk','bread'],['eggs','apple'],['milk','bread'],['apple', 'milk'],['milk','apple','bread']]
+
+from mlxtend.preprocessing import TransactionEncoder
+te=TransactionEncoder()
+te_array=te.fit(transactions).transform(transactions)
+df=pd.DataFrame(te_array, columns=te.columns_)
+df = df.astype(int)
+df
+
+freq_items = apriori(df, min_support = 0.5, use_colnames = True)
+print(freq_items)
+
+rules = association_rules(freq_items, metric ='support', min_threshold=0.05)
+rules = rules.sort_values(['support', 'confidence'], ascending =[False,False])
+rules

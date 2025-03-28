@@ -1,0 +1,43 @@
+// Write a PHP script to keep track of number of times the web page has been accessed (Use Session Tracking).
+
+<?php
+	session_start();
+	if(!isset($_SESSION['count']))
+	{
+  		echo"Welcome you have viwed this page first time";
+  		$_SESSION['count'] = 1;
+	}
+	else
+	{
+  		$_SESSION['count']++;
+  		echo"You have viewed this page ".$_SESSION['count']." times";
+	}
+?>
+    
+//Create ‘Position_Salaries’ Data set. Build a linear regression model by identifying independent and target variable. Split the variables into training and testing sets. then divide the training and testing sets into a 7:3 ratio, respectively and print them. Build a simple linear regression model.
+
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import r2_score, mean_squared_error
+
+salary = pd.read_csv('CSV/Position_Salaries.csv')
+salary.sample(5)
+new_sal = salary[['Level', 'Salary']]
+x = np.array(new_sal[['Level']])
+y = np.array(new_sal[['Salary']])
+
+x_train, x_test, y_train, y_test = train_test_split(x,y, test_size=0.70, random_state=0)
+regret = LinearRegression()
+regret.fit(x_train,y_train)
+
+plt.scatter(x_test, y_test, color = 'green')
+plt.plot(x_train, regret.predict(x_train), color='red',linewidth=3)
+plt.title('Regression(Position_salaries)')
+plt.xlabel('Level')
+plt.ylabel('Salary')
+plt.show()
+
+

@@ -1,0 +1,79 @@
+Write a script to create “cricket.xml” file with multiple elements as shown below: Write a script to add multiple elements in “cricket.xml” file of category, country=”India”.
+
+<?php
+function createCricketXML() {
+    $doc = new DOMDocument();
+    $cricketTeam = $doc->createElement('CricketTeam');
+    $doc->appendChild($cricketTeam);
+    $teamAustralia = $doc->createElement('Team');
+    $teamAustralia->setAttribute('country', 'Australia');
+    $cricketTeam->appendChild($teamAustralia);
+    $playerAustralia = $doc->createElement('player', 'Player_Aus');
+    $teamAustralia->appendChild($playerAustralia);
+    $runsAustralia = $doc->createElement('runs', '100');
+    $teamAustralia->appendChild($runsAustralia);
+    $wicketsAustralia = $doc->createElement('wicket', '5');
+    $teamAustralia->appendChild($wicketsAustralia);
+    $doc->formatOutput = true;
+    $doc->save('cricket.xml');
+}
+function addElementsForIndia() {
+    $doc = new DOMDocument();
+    $doc->load('cricket.xml');
+    $cricketTeam = $doc->documentElement;
+    $teamIndia = $doc->createElement('Team');
+    $teamIndia->setAttribute('country', 'India');
+    $cricketTeam->appendChild($teamIndia);
+    $players = array('Player1', 'Player2', 'Player3');
+    $runs = array(50, 60, 70);
+    $wickets = array(2, 3, 1);
+    foreach ($players as $key => $player) {
+        $playerIndia = $doc->createElement('player', $player);
+        $teamIndia->appendChild($playerIndia);
+
+        $runsIndia = $doc->createElement('runs', $runs[$key]);
+        $teamIndia->appendChild($runsIndia);
+
+        $wicketsIndia = $doc->createElement('wicket', $wickets[$key]);
+        $teamIndia->appendChild($wicketsIndia);
+    }
+    $doc->formatOutput = true;
+    $doc->save('cricket.xml');
+}
+if (!file_exists('cricket.xml')) {
+    createCricketXML();
+}
+addElementsForIndia();
+echo "Elements added successfully to cricket.xml";
+?>
+
+//Consider the following dataset : https://www.kaggle.com/datasets/seungguini/youtube-comments-
+for-covid19-relatedvideos?select=covid_2021_1.csv Write a Python script for the following : i. Read the dataset and perform data cleaning operations on it. ii. Tokenize the comments in words. iii. Perform sentiment analysis and find the percentage of positive, negative and neutral comments..
+
+import pandas as pd
+import re
+from textblob import TextBlob
+data=pd.read_csv('CSV/covid_2021_1.csv')
+data=data.dropna(subset=['comment_text'])
+data['clean_comment']=data['comment_text'].apply(lambda x:re.sub(r'[^a-zA-Z\s]', '', str(x)))
+data['clean_comment']=data['comment_text'].apply(lambda x:re.sub(r'\s+','',str(x)))
+data['tokenized_comment']=data['clean_comment'].apply(lambda x:x.split())
+positive_comments=0
+negative_comments=0
+neutral_comments=0
+for comment in data['clean_comment']:
+   analysis=TextBlob(comment)
+   if analysis.sentiment.polarity > 0:
+     positive_comments+=1
+   elif analysis.sentiment.polarity <0:
+     negative_comments+=1
+   else:
+     neutral_comments+=1
+total_comments=len(data)
+ps_per=(positive_comments/total_comments)*100
+neg_per=(negative_comments/total_comments)*100
+neut_per=(positive_comments/total_comments)*100         
+
+print("percentage of positive comment: ",format(ps_per))
+print("percentage of negative comment: ",format(neg_per))
+print("percentage of neutral comment: ",format(neut_per))

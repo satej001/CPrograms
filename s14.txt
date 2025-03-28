@@ -1,0 +1,60 @@
+//Create TEACHER table as follows TEACHER(tno, tname, qualification, salary). Write Ajax program to select a teachers name and print the selected teachers details
+
+//html
+<html>
+<script>
+    function dis() {
+        var ob = false;
+        ob = new XMLHttpRequest();
+        var name = document.getElementById("tname").value;
+        ob.open("GET", "1.php?tname=" + name);
+        ob.send();
+        ob.onreadystatechange = function () {
+            if (ob.readyState == 4 && ob.status == 200) {
+                document.getElementById("snamed").innerHTML = ob.responseText;
+            }
+        }
+    }
+</script>
+
+<body>
+    Enter teacher name Name<input type="text" name=tname id=tname>
+    <input type="submit" value=submit>
+    <span id="snamed"></span>
+</body>
+
+</html>
+
+//php
+<?php
+$tname=$_GET['tname'];
+$db = pg_connect("host=localhost dbname= user= password= ");
+$query = "select *from teacher where tname='$tname'";
+$result=pg_query($db,$query);
+while($row=pg_fetch_array($result))
+{
+    echo $row['tno']."--".$row['tname']."--".$row['qualifications']."--".$row['salary']."<br>";
+}
+?>
+
+//Create the following dataset in python & Convert the categorical values into numeric format.Apply the apriori algorithm on the above dataset to generate the frequent itemsets and association rules. Repeat the process with different min_sup values. 
+ 
+import numpy as np 
+import pandas as pd 
+from mlxtend.frequent_patterns import apriori, association_rules 
+
+transactions = [['eggs','milk','bread'],['eggs','apple'],['milk','bread'],['apple', 'milk'],['milk','apple','bread']]
+
+from mlxtend.preprocessing import TransactionEncoder
+te=TransactionEncoder()
+te_array=te.fit(transactions).transform(transactions)
+df=pd.DataFrame(te_array, columns=te.columns_)
+df = df.astype(int)
+df
+
+freq_items = apriori(df, min_support = 0.5, use_colnames = True)
+print(freq_items)
+
+rules = association_rules(freq_items, metric ='support', min_threshold=0.05)
+rules = rules.sort_values(['support', 'confidence'], ascending =[False,False])
+rules

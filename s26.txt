@@ -1,0 +1,123 @@
+//Create employee table as follows EMP (eno, ename, designation, salary). Write Ajax program to select the employees name and print the selected employee’s details. 
+
+//html
+<html>
+<head>
+    <title>Employee Details</title>
+</head>
+<body>
+    <h2>Select Employee:</h2>
+    <select id="employeeList" onchange="getEmployeeDetails(this.value)">
+        <option value="">Select an employee</option>
+    </select>
+    <div id="employeeDetails"></div>
+
+    <script>
+        function loadEmployees() {
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function() {
+                if (this.readyState == 4 && this.status == 200) {
+                    document.getElementById("employeeList").innerHTML = this.responseText;
+                }
+            };
+            xhttp.open("GET", "1.php", true);
+            xhttp.send();
+        }
+
+        function getEmployeeDetails(eno) {
+            if (eno != "") {
+                var xhttp = new XMLHttpRequest();
+                xhttp.onreadystatechange = function() {
+                    if (this.readyState == 4 && this.status == 200) {
+                        document.getElementById("employeeDetails").innerHTML = this.responseText;
+                    }
+                };
+                xhttp.open("POST", "2.php", true);
+                //xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+                xhttp.send("eno=" + eno);
+            } else {
+                document.getElementById("employeeDetails").innerHTML = '';
+            }
+        }
+        loadEmployees();
+    </script>
+</body>
+</html>
+
+//1.php
+<?php
+$conn = pg_connect("host=localhost dbname= user= password= ");
+$sql = "SELECT eno, ename FROM EMP";
+$result = pg_query($sql);
+$options = "<option value=''>Select an employee</option>";
+if ($result->num_rows > 0) {
+    while ($row = $result->fetch_assoc()) {
+        $options .= "<option value='" . $row['eno'] . "'>" . $row['ename'] . "</option>";
+    }
+}
+echo $options;
+$conn.close();
+?>
+
+//2.php
+<?php
+if (isset($_POST['eno'])) {
+    $conn = pg_connect("host=localhost dbname= user= password= ");
+    $eno = $_POST['eno'];
+    $sql = "SELECT * FROM EMP WHERE eno = '$eno'";
+    $result = pg_query($sql);
+
+    while($row = pg_fetch_array($result)){
+        echo "<h2>Employee Details:</h2>";
+        echo "<p><strong>Employee Number:</strong> " . $row['eno'] . "</p>";
+        echo "<p><strong>Name:</strong> " . $row['ename'] . "</p>";
+        echo "<p><strong>Designation:</strong> " . $row['designation'] . "</p>";
+        echo "<p><strong>Salary:</strong> " . $row['salary'] . "</p>";
+    }
+    $conn.close();
+}
+?>
+
+
+//Consider text paragraph. """Hello all, Welcome to Python Programming Academy. Python Programming Academy is a nice platform to learn new programming skills. It is difficult to get enrolled in this Academy.""" Preprocess the text to remove any special characters and digits. Generate the summary using extractive summarization process.
+
+import re
+from nltk.tokenize import sent_tokenize
+from nltk.corpus import stopwords
+from nltk.stem import PorterStemmer
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
+
+text = "Hello all, Welcome to Python Programming Academy. Python Programming Academy is a nice platform to learn new programming skills. It is difficult to get enrolled in this Academy."
+
+def preprocess_text(text):
+    text = re.sub(r'[^a-zA-Z\s]', '', text)
+    text = re.sub(r'\d+', '', text)
+    return text.lower()
+
+def tokenize_sentences(text):
+    return sent_tokenize(text)
+
+preprocessed_text = preprocess_text(text)
+sentences = tokenize_sentences(preprocessed_text)
+
+stop_words = set(stopwords.words("english"))
+stemmer = PorterStemmer()
+
+def preprocess_sentence(sentence):
+    words = sentence.split()
+    words = [stemmer.stem(word) for word in words if word not in stop_words]
+    return ' '.join(words)
+
+preprocessed_sentences = [preprocess_sentence(sentence) for sentence in sentences]
+vectorizer = TfidfVectorizer()
+tfidf_matrix = vectorizer.fit_transform(preprocessed_sentences)
+cosine_sim_matrix = cosine_similarity(tfidf_matrix, tfidf_matrix)
+sentence_scores = cosine_sim_matrix.sum(axis=1)
+sorted_indices = sentence_scores.argsort()[::-1]
+num_sentences_summary = 2
+summary_sentences = [sentences[idx] for idx in sorted_indices[:num_sentences_summary]]
+summary = ' '.join(summary_sentences)
+
+print("Original Text:\n", text)
+print("\nExtractive Summary:\n", summary)

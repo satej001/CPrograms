@@ -1,0 +1,69 @@
+//Write a Java Script Program to validate user name and password on onSubmit event
+
+<html>
+<head>
+    <title>User Authentication</title>
+    <script>
+        function validateForm() {
+            var username = document.getElementById("username").value;
+            var password = document.getElementById("password").value;
+            if (username.trim() === "") {
+                alert("Please enter a username.");
+                return false;
+            }
+            if (password.trim() === "") {
+                alert("Please enter a password.");
+                return false;
+            }
+            if (password.length < 6) {
+                alert("Password must be at least 6 characters long.");
+                return false;
+            }
+            return true;
+        }
+    </script>
+</head>
+<body>
+    <h2>User Authentication</h2>
+    <form onsubmit="return validateForm()">
+        <label for="username">Username:</label><br>
+        <input type="text" id="username" name="username"><br>
+        <label for="password">Password:</label><br>
+        <input type="password" id="password" name="password"><br><br>
+        <input type="submit" value="Submit">
+    </form>
+</body>
+</html>
+
+
+//Download the movie_review.csv dataset from Kaggle by using the following link :https://www.kaggle.com/nltkdata/movie-review/version/3?select=movie_review.csv to perform sentiment analysis on above dataset and create a wordcloud
+
+import pandas as pd
+import nltk
+from nltk.corpus import stopwords
+from nltk.tokenize import word_tokenize
+from nltk.stem import WordNetLemmatizer
+from wordcloud import WordCloud
+import matplotlib.pyplot as plt
+nltk.download('wordnet')
+
+df = pd.read_csv('CSV/movie_review.csv')
+df
+
+stop_words = set(stopwords.words('english'))
+lemmatizer = WordNetLemmatizer()
+
+def preprocess_text(text):
+    words = word_tokenize(text)
+    words = [word.lower() for word in words if word.isalpha()]
+    words = [lemmatizer.lemmatize(word) for word in words if word not in stop_words]
+    return ' '.join(words)
+
+df['clean_text'] = df['text'].apply(preprocess_text)
+all_text = ' '.join(df['clean_text'])
+wordcloud = WordCloud(width=800, height=400, background_color='white').generate(all_text)
+plt.figure(figsize=(10, 6))
+plt.imshow(wordcloud, interpolation='bilinear')
+plt.axis('off')
+plt.title('Word Cloud of Movie Reviews')
+plt.show()

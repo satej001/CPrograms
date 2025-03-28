@@ -1,0 +1,79 @@
+//Write a PHP script using AJAX concept, to check user name and password are valid or Invalid (use database to store user name and password).
+
+<html>
+<body>
+    <h2>Login</h2>
+    <form id="loginForm">
+        <label for="username">Username:</label><br>
+        <input type="text" id="username" name="username" required><br><br>
+        <label for="password">Password:</label><br>
+        <input type="password" id="password" name="password" required><br><br>
+        <button type="submit">Login</button>
+    </form>
+
+    <div id="message"></div>
+
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            var username = document.getElementById('username').value;
+            var password = document.getElementById('password').value;
+
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function() {
+                if (this.readyState == 4 && this.status == 200) {
+                    document.getElementById('message').innerHTML = this.responseText;
+                }
+            };
+            xhttp.open('POST', '1.php', true);
+            xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+            xhttp.send('username=' + username + '&password=' + password);
+        });
+    </script>
+</body>
+</html>
+
+//php
+<?php
+$conn = pg_connect("host=localhost dbname= user= password= ");
+$username = $_POST['username'];
+$password = $_POST['password'];
+
+$sql = "SELECT * FROM users WHERE username = '$username' AND password = '$password'";
+$result = pg_query($sql);
+
+if ($row = pg_fetch_array($result) > 0) {
+    echo "<p>Login successful.</p>";
+} else {
+    echo "<p>Invalid username or password.</p>";
+}
+$conn.close();
+?>
+
+//Build a simple linear regression model for Car Dataset. 
+
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import r2_score, mean_squared_error
+
+sales = pd.read_csv('CSV/car_data.csv')
+sales.sample(5)
+
+new_df = sales[['city mpg', 'MSRP']]
+X = np.array(new_df[['city mpg']])
+y = np.array(new_df[['MSRP']])
+
+X_train, X_test, y_train, y_test = train_test_split(X,y, test_size=0.70, random_state=0)
+regret = LinearRegression()
+regret.fit(X_train,y_train)
+
+plt.scatter(X_test, y_test, color = 'green')
+plt.plot(X_train, regret.predict(X_train), color='red',linewidth=3)
+plt.title('Linear Regression')
+plt.xlabel('mpg')
+plt.ylabel('MSRP')
+plt.show()

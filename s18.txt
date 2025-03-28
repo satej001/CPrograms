@@ -1,0 +1,66 @@
+//Write a Java Script Program to print Fibonacci numbers on onclick event. 
+
+<html>
+<head>
+    <title>Fibonacci Numbers</title>
+    <script>
+        function fibo() {
+            var num = parseInt(prompt("Enter the number of Fibonacci numbers to generate: "));
+
+            if (isNaN(num) || num <= 0) {
+                alert("Please enter a valid positive number.");
+                return;
+            }
+            var fib = [];
+            fib.push(0);
+            fib.push(1);
+
+            for (var i = 2; i < num; i++) {
+                fib.push(fib[i - 1] + fib[i - 2]);
+            }
+            document.getElementById("p1").innerHTML = "Fibonacci Numbers: " + fib.join(", ");
+        }
+    </script>
+</head>
+<body>
+    <button onclick="fibo()">Generate Fibonacci Numbers</button>
+    <p id="p1"></p>
+</body>
+</html>
+
+//Consider any text paragraph. Remove the stopwords. Tokenize the paragraph to extract words and
+sentences. Calculate the word frequency distribution and plot the frequencies. Plot the wordcloud of the text.
+
+import re
+import matplotlib.pyplot as plt
+from wordcloud import WordCloud
+from nltk.tokenize import word_tokenize, sent_tokenize
+from nltk.corpus import stopwords
+from collections import Counter
+
+text = """
+Hello world this is 4 and Here to summarize text
+"""
+
+stop_words = set(stopwords.words('english'))
+filtered_text = ' '.join([word for word in re.findall(r'\b\w+\b', text.lower()) if word not in stop_words])
+words = word_tokenize(filtered_text)
+sentences = sent_tokenize(text)
+word_freq = Counter(words)
+
+plt.figure(figsize=(10, 6))
+plt.bar(word_freq.keys(), word_freq.values())
+plt.xlabel('Words')
+plt.ylabel('Frequency')
+plt.title('Word Frequency Distribution')
+plt.xticks(rotation=45)
+plt.show()
+
+wordcloud = WordCloud(width=800, height=400, background_color='white').generate(filtered_text)
+
+plt.figure(figsize=(10, 6))
+plt.imshow(wordcloud, interpolation='bilinear')
+plt.axis('off')
+plt.title('Wordcloud')
+plt.show()
+

@@ -1,0 +1,62 @@
+//Write a PHP script to read “Movie.xml” file and print all MovieTitle and ActorName of file using DOMDocument Parser. “Movie.xml” file should contain following information with at least 5 records with values. MovieInfoMovieNo, MovieTitle, ActorName ,ReleaseYear 
+
+//xml
+<?xml version="1.0" encoding="UTF-8"?>
+<MovieInfo>
+<Movie>
+<Movieno>1</Movieno>
+<Movietitle>war</Movietitle>
+<Actorname>Hritik Roshan</Actorname>
+<year>2019</year>
+</Movie>
+<Movie>
+<Movieno>2</Movieno>
+<Movietitle>Pathan</Movietitle>
+<Actorname>Sharukh Khan</Actorname>
+<year>2023</year>
+</Movie>
+</MovieInfo>
+
+//php1
+<?php
+$dom = new DomDocument();
+$dom->load("movie.xml");
+echo "<h2>Names of the Movies and their Actors:</h2>";
+$movies = $dom->getElementsByTagName("Movie");
+foreach ($movies as $movie) {
+    $title = $movie->getElementsByTagName("Movietitle")->item(0)->textContent;
+    $actor = $movie->getElementsByTagName("Actorname")->item(0)->textContent;
+
+    echo "<b>Movie Title:</b> $title<br>";
+    echo "<b>Actor Name:</b> $actor<br><br>";
+}
+?>
+
+//Download the Market basket dataset. Write a python program to read the dataset and display its
+information. Preprocess the data (drop null values etc.) Convert the categorical values into numeric format. Apply the apriori algorithm on the above dataset to generate the frequent itemsets and association rules
+
+import pandas as pd
+from mlxtend.frequent_patterns import apriori,association_rules
+df=pd.read_csv('CSV/Market_Basket_Optimisation.csv')
+df=df.sample(50)
+df
+
+transactions=[]
+for i in range(0,len(df)):
+      transactions.append([str(df.values[i,j])for j in range(0,len(df.columns))if(str(df.values[i,j])!='nan')])
+transactions
+
+df.dropna(inplace=True,axis=0)
+from mlxtend.preprocessing import TransactionEncoder
+te=TransactionEncoder()
+te_array=te.fit_transform(transactions)
+te_array = te_array.astype('int')
+df1=pd.DataFrame(te_array,columns=te.columns_)
+df1
+
+freq_items=apriori(df1,min_support=0.005,use_colnames=True)
+freq_items
+
+rules=association_rules(freq_items,metric='support',min_threshold=0.005)
+rules=rules.sort_values(['support','confidence'])
+rules.tail()

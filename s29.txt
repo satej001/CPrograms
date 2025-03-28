@@ -1,0 +1,81 @@
+//Write a PHP script for the following: Design a form to accept a number from the user. Perform the operations and show the results. 1) Fibonacci Series. 2) To find sum of the digits of that number. (Use the concept of self processing page.)
+
+<html>
+<body>
+    <h2>Number Operations</h2>
+    <form method="post" action="<?php $_SERVER["PHP_SELF"]; ?>">
+        <label for="number">Enter a number:</label><br>
+        <input type="text" id="number" name="number" required><br><br>
+        
+        <button type="submit" name="submit">Submit</button>
+    </form>
+
+    <?php
+    function fibonacci($n) {
+        $fib = array();
+        $fib[0] = 0;
+        $fib[1] = 1;
+        for ($i = 2; $i < $n; $i++) {
+            $fib[$i] = $fib[$i - 1] + $fib[$i - 2];
+        }
+        return $fib;
+    }
+
+    function sumOfDigits($number) {
+        $sum = 0;
+        while ($number > 0) {
+            $sum += $number % 10;
+            $number = (int)($number / 10);
+        }
+        return $sum;
+    }
+
+    if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["submit"])) {
+        $number = $_POST["number"];
+
+        if (!is_numeric($number)) {
+            echo "<p>Please enter a valid number.</p>";
+        } else {
+            echo "<h3>Fibonacci Series:</h3>";
+            $fibonacciSeries = fibonacci($number);
+            echo implode(", ", $fibonacciSeries);
+            echo "<br><br>";
+            echo "<h3>Sum of Digits:</h3>";
+            $sum = sumOfDigits($number);
+            echo "Sum of digits of $number is: $sum";
+        }
+    }
+    ?>
+</body>
+</html>
+
+
+//Build a logistic regression model for Student Score Dataset.
+
+import pandas as pd
+import numpy as np
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import accuracy_score, classification_report
+
+df = pd.read_csv('CSV/student_scores.csv')
+print(df.head())
+print("\nSummary statistics of the dataset:")
+print(df.describe())
+X = df[['Hours']]
+y = df[['Scores']]
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+logistic_reg_model = LogisticRegression()
+logistic_reg_model.fit(X_train, y_train)
+y_pred = logistic_reg_model.predict(X_test)
+accuracy = accuracy_score(y_test, y_pred)
+print("\nAccuracy of the logistic regression model:", accuracy)
+print("\nClassification Report:")
+print(classification_report(y_test, y_pred))
+
+plt.scatter(X_test, y_test, color = 'green')
+plt.plot(X_train, regret.predict(X_train), color='red',linewidth=3)
+plt.title('Logistic Regression')
+plt.xlabel('Hours')
+plt.ylabel('SCores')
+plt.show()
